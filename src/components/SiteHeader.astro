@@ -1,0 +1,19 @@
+---
+import { effects } from '../data/buttons';
+const pathname = Astro.url.pathname;
+const links = [
+  { label: 'Buttons', href: '/' },
+  { label: 'Collections', href: '/collections/' },
+  { label: 'Guides', href: '/guides/' },
+  { label: 'Generator', href: '/tools/button-generator/' },
+];
+---
+<header class="site-header">
+  <a class="brand" href="/" aria-label="CSS Button Library home"><span class="brand-mark" aria-hidden="true">B</span><span class="mono">CSS Button Library</span></a>
+  <nav class="primary-nav" aria-label="Main navigation">
+    {links.map((link) => <a href={link.href} aria-current={(link.href === '/' ? pathname === '/' : pathname.startsWith(link.href)) ? 'page' : undefined}>{link.label}</a>)}
+  </nav>
+  <div class="header-right">
+    <span class="header-status mono">{effects.length} buttons</span>
+  </div>
+</header>

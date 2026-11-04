@@ -1,0 +1,64 @@
+<dialog class="code-dialog" id="css-modal" aria-labelledby="modal-title">
+  <div class="modal-head"><h2 id="modal-title">Button code</h2><button class="modal-close" type="button" data-close-modal aria-label="Close code preview">✕</button></div>
+  <div class="modal-preview"><div class="stage" id="modal-preview"></div></div>
+  <div class="modal-code-wrap"><pre class="modal-code"><code id="modal-code"></code></pre></div>
+  <div class="modal-foot"><p class="modal-hint" id="modal-hint" role="status">HTML and CSS</p><button class="action-button" id="modal-copy" type="button" disabled>Copy code</button></div>
+</dialog>
+<script>
+  import { copyText, trackCopy } from '../scripts/copy';
+  import { loadButtonData } from '../scripts/button-data';
+  const dialog = document.querySelector<HTMLDialogElement>('#css-modal')!;
+  const title = document.querySelector('#modal-title')!;
+  const preview = document.querySelector('#modal-preview')!;
+  const code = document.querySelector('#modal-code')!;
+  const hint = document.querySelector('#modal-hint')!;
+  const copy = document.querySelector<HTMLButtonElement>('#modal-copy')!;
+  let token = 0;
+  let current = { text: '', id: '', mode: 'css' };
+  const close = () => { token++; dialog.close(); };
+  dialog.addEventListener('cancel', () => { token++; });
+  dialog.querySelector('[data-close-modal]')!.addEventListener('click', close);
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) {
+      const rect = dialog.getBoundingClientRect();
+      if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) close();
+    }
+  });
+  document.addEventListener('click', async (event) => {
+    if (!(event.target instanceof Element)) return;
+    const trigger = event.target.closest<HTMLButtonElement>('[data-modal-mode]');
+    if (!trigger) return;
+    const card = trigger.closest<HTMLElement>('[data-effect-id]')!;
+    const id = card.dataset.effectId!;
+    const mode = trigger.dataset.modalMode === 'prompt' ? 'prompt' : 'css';
+    const request = ++token;
+    current = { text: '', id, mode };
+    title.textContent = `${card.dataset.effectName}: ${mode === 'prompt' ? 'prompt' : 'HTML and CSS'}`;
+    preview.replaceChildren(card.querySelector('[data-preview-button]')!.cloneNode(true));
+    copy.disabled = true;
+    copy.textContent = mode === 'prompt' ? 'Copy prompt' : 'Copy code';
+    code.textContent = 'Loading code…';
+    hint.textContent = 'Loading';
+    dialog.showModal();
+    try {
+      const data = await loadButtonData();
+      if (request !== token || !dialog.open) return;
+      current.text = (mode === 'prompt' ? data.prompts : data.snippets)[id];
+      if (!current.text) throw new Error('Missing snippet');
+      code.textContent = current.text;
+      copy.disabled = false;
+      hint.textContent = mode === 'prompt' ? 'Paste into your coding agent' : 'Includes focus and reduced-motion styles';
+    } catch {
+      if (request !== token) return;
+      code.textContent = 'Code could not load. Close this dialog and try again, or open the details link.';
+      hint.textContent = 'Load failed';
+    }
+  });
+  copy.addEventListener('click', async () => {
+    const snapshot = { ...current };
+    if (!snapshot.text) return;
+    const success = await copyText(snapshot.text);
+    if (success) trackCopy(snapshot.id, snapshot.mode === 'prompt' ? 'prompt' : 'html-css');
+    hint.textContent = success ? 'Copied to clipboard' : 'Copy failed. Select the code and copy it manually.';
+  });
+</script>

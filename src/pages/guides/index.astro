@@ -1,0 +1,7 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { guides } from '../../data/guides';
+---
+<Layout title="CSS button guides: animation, accessibility and theming | Colorion" description="Learn how CSS button effects work, preserve keyboard focus and reduced motion, and customize colors, size, and timing with working examples." breadcrumbs={[{ name: 'Buttons', href: '/' }, { name: 'Guides', href: '/guides/' }]}>
+  <main class="page-width content-main" id="main" tabindex="-1"><div class="page-intro"><span class="eyebrow">Guides</span><h1>CSS button guides.</h1><p>Understand the CSS behind the effect, adapt it to your design, and keep the button usable.</p></div><section class="section" aria-label="CSS button guides"><div class="resource-list">{guides.map((guide) => <a href={`/guides/${guide.slug}/`}><strong>{guide.name}</strong><p>{guide.summary}</p><span aria-hidden="true">↗</span></a>)}</div></section><p class="reading-note">Ready to try a technique? <a href="/collections/">Browse the button collections</a> or <a href="/tools/button-generator/">open the generator</a>.</p></main>
+</Layout>

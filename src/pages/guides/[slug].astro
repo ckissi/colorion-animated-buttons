@@ -1,0 +1,25 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+import ButtonCard from '../../components/ButtonCard.astro';
+import GalleryModal from '../../components/GalleryModal.astro';
+import { guides, type Guide } from '../../data/guides';
+import { effectPages } from '../../data/catalog';
+import { getEffect, getCss } from '../../data/buttons';
+export function getStaticPaths() { return guides.map((guide) => ({ params: { slug: guide.slug }, props: { guide } })); }
+interface Props { guide: Guide; }
+const { guide } = Astro.props;
+const related = guide.effects.map((slug) => effectPages.find((page) => page.slug === slug)!);
+---
+<Layout title={`${guide.title} | Colorion`} description={guide.summary} breadcrumbs={[{ name: 'Buttons', href: '/' }, { name: 'Guides', href: '/guides/' }, { name: guide.name, href: `/guides/${guide.slug}/` }]}>
+  <main class="page-width content-main" id="main" tabindex="-1" data-page-type="guide">
+    <div class="page-intro"><span class="eyebrow">Practical CSS guide</span><h1>{guide.name}</h1><p>{guide.intro}</p></div>
+    <div class="guide-body"><article class="prose">
+      <nav class="guide-toc" aria-label="In this guide"><ol>{guide.sections.map((section) => <li><a href={`#${section.id}`}>{section.title}</a></li>)}</ol></nav>
+      {guide.sections.map((section) => <section id={section.id}><h2>{section.title}</h2>{section.paragraphs.map((text) => <p>{text}</p>)}{section.code && <CodeBlock id={`guide-${section.id}`} title="CSS example" code={section.code} format="guide-css" />}</section>)}
+      <section><h2>References</h2><ul>{guide.references.map((reference) => <li><a href={reference.href}>{reference.label}</a></li>)}</ul></section>
+    </article><aside aria-label="Related implementations"><h2>Complete implementations</h2>{related.map((page) => <a href={`/effects/${page.slug}/`}>{page.name} ↗</a>)}<a href="/tools/button-generator/">Customize a button ↗</a></aside></div>
+    <section class="section" aria-labelledby="demo-title"><div class="section-heading"><h2 id="demo-title">Try the examples.</h2></div><div class="panel"><div class="grid preview-grid">{guide.demoIds.map((id) => <ButtonCard effect={getEffect(id)} />)}</div></div></section>
+    <GalleryModal /><style is:global set:html={getCss(guide.demoIds)}></style>
+  </main>
+</Layout>

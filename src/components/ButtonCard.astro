@@ -1,0 +1,17 @@
+---
+import type { ButtonEffect } from '../data/buttons';
+import { effectHref, pageFor } from '../data/catalog';
+interface Props { effect: ButtonEffect; detailLink?: boolean; }
+const { effect, detailLink = true } = Astro.props;
+const destination = effectHref(effect.id);
+---
+<article class="cell" id={`effect-${effect.id}`} data-effect-id={effect.id} data-effect-name={effect.name}>
+  <span class="cell-index mono" aria-hidden="true">{String(effect.id).padStart(2, '0')}</span>
+  <div class="cell-actions">
+    <button class="cell-action mono" type="button" data-modal-mode="prompt" aria-label={`${effect.name}: view prompt`}>Prompt</button>
+    <button class="cell-action mono" type="button" data-modal-mode="css" aria-label={`${effect.name}: view code`}>Code</button>
+  </div>
+  <div class="stage"><button class={`btn fx-${effect.id}`} type="button" data-preview-button aria-label={effect.name}><span class="btn-label">{effect.name}</span></button></div>
+  <h3>{detailLink ? <a href={destination}>{effect.name}</a> : effect.name}</h3>
+  {detailLink && <a class="card-details" href={destination}>{pageFor(effect.id) ? 'Code & details' : 'Explore collection'} <span aria-hidden="true">↗</span></a>}
+</article>

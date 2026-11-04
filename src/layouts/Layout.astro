@@ -1,23 +1,39 @@
 ---
 import '../styles/global.css';
-
+import '../styles/site.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import ColorionSidebar from '../components/ColorionSidebar.astro';
+import { effects } from '../data/buttons';
+import { SITE } from '../data/catalog';
 interface Props {
   title?: string;
   description?: string;
   image?: string;
+  noindex?: boolean;
+  breadcrumbs?: { name: string; href: string }[];
 }
-
 const {
-  title = 'CSS Button Library — 99 pure-CSS hover effects, free to copy',
-  description = 'A library of 99 buttons with pure-CSS hover effects. Copy the CSS or grab a ready-made LLM prompt to recreate any button — no JavaScript, no dependencies, MIT licensed.',
-  image = '/og.png',
+  title = `${effects.length} CSS Animated Buttons & Hover Effects | Colorion`,
+  description = `Explore ${effects.length} animated CSS buttons with live previews. Copy HTML and CSS for glow, fill, border, and shadow effects. Free under the MIT license.`,
+  image = '/og.png', noindex = false, breadcrumbs = [],
 } = Astro.props;
-
-// Absolute URLs for social cards (falls back to a relative path if `site` is unset).
-const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : Astro.url.pathname;
-const ogImage = Astro.site ? new URL(image, Astro.site).href : image;
+const canonical = new URL(Astro.url.pathname, SITE).href;
+const ogImage = new URL(image, SITE).href;
+const structuredData = [
+  ...(Astro.url.pathname === '/' ? [{
+    '@context': 'https://schema.org', '@type': 'WebSite',
+    name: 'Colorion Animated Buttons', alternateName: 'CSS Button Library', url: SITE,
+  }] : []),
+  ...(breadcrumbs.length ? [{
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbs.map((crumb, index) => ({
+      '@type': 'ListItem', position: index + 1, name: crumb.name,
+      item: new URL(crumb.href, SITE).href,
+    })),
+  }] : []),
+];
 ---
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -25,42 +41,58 @@ const ogImage = Astro.site ? new URL(image, Astro.site).href : image;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <title>{title}</title>
-
-    <!-- Icons -->
+    <script is:inline>
+      (() => {
+        let collapsed = window.matchMedia('(max-width: 800px)').matches;
+        try {
+          const saved = localStorage.getItem('colorion-projects-collapsed');
+          if (saved === 'true' || saved === 'false') collapsed = saved === 'true';
+        } catch { /* Keep the responsive default when storage is unavailable. */ }
+        document.documentElement.dataset.projectsCollapsed = String(collapsed);
+      })();
+    </script>
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    {!noindex && <link rel="canonical" href={canonical} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-
-    <!-- Open Graph -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Colorion Animated Buttons" />
+    <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <link rel="canonical" href={canonical} />
-
-    <!-- Twitter -->
+    <meta property="og:image:alt" content="Colorion CSS button library with live animated button examples" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-
-    <!-- Self-hosted fonts. Preload the above-the-fold weights (Inter 500 powers
-         the hero h1 / LCP element; Inter 400 the body copy) so they arrive
-         before paint and the headline doesn't swap late. @font-face lives in
-         the inlined global.css. -->
     <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin-500-normal.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin-400-normal.woff2" crossorigin />
-
-    <!-- Privacy-friendly analytics by Plausible -->
+    {structuredData.length > 0 && <script type="application/ld+json" set:html={JSON.stringify(structuredData).replaceAll('<', '\\u003c')} />}
     <script async src="https://plausible.elerion.com/js/pa-T6ZkQAwvPkS5R7g32augx.js"></script>
     <script is:inline>
-      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-      plausible.init()
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)};
+      plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init();
     </script>
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <ColorionSidebar />
+    <div class="site-shell">
+    <SiteHeader />
+    {breadcrumbs.length > 0 && <nav class="breadcrumbs page-width" aria-label="Breadcrumb">
+      <ol>{breadcrumbs.map((crumb, index) => <li>
+        {index === breadcrumbs.length - 1 ? <span aria-current="page">{crumb.name}</span> : <a href={crumb.href}>{crumb.name}</a>}
+      </li>)}</ol>
+    </nav>}
     <slot />
+    <SiteFooter />
+    </div>
+    <p class="sr-only" id="copy-status" role="status" aria-live="polite"></p>
+    <script>import '../scripts/copy';</script>
   </body>
 </html>

@@ -1,0 +1,8 @@
+---
+interface Props { id: string; title: string; code: string; format?: string; effectId?: number; }
+const { id, title, code, format = 'css', effectId } = Astro.props;
+---
+<div class="code-block">
+  <div class="code-block-head"><span class="mono">{title}</span><button class="text-button" type="button" data-copy-target={id} data-copy-format={format} data-copy-effect={effectId}>Copy {title}</button></div>
+  <pre tabindex="0" aria-label={`${title} code`}><code id={id}>{code}</code></pre>
+</div>

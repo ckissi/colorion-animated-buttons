@@ -1,0 +1,125 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+import { effects, getCss } from '../../data/buttons';
+import { collections } from '../../data/catalog';
+import { DEFAULT_SETTINGS, customizeCss, generatorMarkup, generatorReact } from '../../utils/generator';
+const css = customizeCss(getCss([14]), DEFAULT_SETTINGS);
+---
+<Layout title="CSS button generator: colors, hover effects and code | Colorion" description="Create an animated CSS button. Choose from 99 effects, customize colors, radius, padding and timing, then copy HTML, CSS or React code." breadcrumbs={[{ name: 'Buttons', href: '/' }, { name: 'Button generator', href: '/tools/button-generator/' }]}>
+  <main class="page-width content-main" id="main" tabindex="-1" data-page-type="tool">
+    <div class="page-intro"><span class="eyebrow">Button generator</span><h1>CSS button generator.</h1><p>Choose an effect, adjust the details, and copy the complete code. Share your settings with a link or download a working HTML file.</p></div>
+    <noscript><p class="generator-noscript">The controls need JavaScript. You can still copy the default HTML and CSS below, or <a href="/collections/">browse complete implementations</a>.</p></noscript>
+    <div class="generator section" id="generator">
+      <form class="generator-form" id="generator-form" aria-label="Button settings">
+        <div class="field"><label for="generator-effect">Effect</label><select id="generator-effect" name="effect">{collections.map((collection) => <optgroup label={collection.name}>{collection.ids.map((id) => <option value={id} selected={id === 14}>{effects.find((effect) => effect.id === id)!.name}</option>)}</optgroup>)}</select></div>
+        <div class="field"><label for="generator-label">Button label</label><input id="generator-label" name="label" maxlength="60" value={DEFAULT_SETTINGS.label} required /></div>
+        <div class="color-fields"><div class="field"><label for="generator-accent">Accent</label><input id="generator-accent" name="accent" type="color" value={DEFAULT_SETTINGS.accent} /></div><div class="field"><label for="generator-ink">Foreground</label><input id="generator-ink" name="ink" type="color" value={DEFAULT_SETTINGS.ink} /></div></div>
+        <div class="field"><label for="generator-surface">Surface</label><input id="generator-surface" name="surface" type="color" value={DEFAULT_SETTINGS.surface} /></div>
+        <div class="field"><label for="generator-radius">Base corner radius <output id="radius-value">8px</output></label><input id="generator-radius" name="radius" type="range" min="0" max="48" value="8" /></div>
+        <div class="field"><label for="generator-padding">Horizontal padding <output id="padding-value">24px</output></label><input id="generator-padding" name="padding" type="range" min="12" max="48" value="24" /></div>
+        <div class="field"><label for="generator-duration">Effect timing <output id="duration-value">400ms</output></label><input id="generator-duration" name="duration" type="range" min="100" max="1600" step="50" value="400" /></div>
+        <div><label><input id="generator-preview-toggle" type="checkbox" /> Show the effect without hover</label></div>
+        <button class="action-button secondary" type="reset">Reset settings</button>
+      </form>
+      <div>
+        <div class="generator-preview" id="generator-preview"><button class="btn fx-14" type="button" id="generated-button" aria-label={DEFAULT_SETTINGS.label}><span class="btn-label">{DEFAULT_SETTINGS.label}</span></button><p>Hover, focus, or enable “Show the effect”.</p></div>
+        <div class="inline-actions"><button class="action-button" id="generator-share" type="button">Copy share link</button><button class="action-button secondary" id="generator-download" type="button">Download HTML</button></div>
+        <p class="generator-status" id="generator-status" role="status" aria-live="polite">Includes focus and reduced-motion styles. Check your final color contrast.</p>
+        <section class="section" aria-labelledby="export-title"><div class="section-heading"><h2 id="export-title">Your code.</h2></div><CodeBlock id="generator-html-code" title="HTML" code={generatorMarkup(DEFAULT_SETTINGS)} format="generator-html" effectId={14} /><CodeBlock id="generator-css-code" title="CSS" code={css} format="generator-css" effectId={14} /><details class="export-extra"><summary>Use the button in React</summary><p>Save the CSS as <code>button.css</code> next to this component.</p><CodeBlock id="generator-react-code" title="React" code={generatorReact(DEFAULT_SETTINGS)} format="generator-react" effectId={14} /></details></section>
+      </div>
+    </div>
+    <section class="prose section"><h2>What the settings change</h2><p>The accent controls highlights. Foreground and surface colors work together for fills and labels. Timing updates the selected effect’s transitions and animations. The reduced-motion rule remains separate.</p><p>Some effects intentionally change their radius or padding during interaction. The base controls set the resting shape. Review the result with your actual label and background.</p><h2>Keep your settings</h2><p>The share link stores settings after the URL’s # symbol. It does not create a separate page or send your label to a server. The download contains a standalone HTML example with its CSS.</p><p>For implementation details, read <a href="/guides/customize-css-buttons/">how to customize CSS buttons</a>. For technique comparisons, <a href="/collections/">browse the collections</a>.</p></section>
+    <style is:global id="generator-effect-css" set:html={getCss([14])}></style>
+  </main>
+</Layout>
+<script>
+  import { loadButtonData } from '../../scripts/button-data';
+  import { copyText } from '../../scripts/copy';
+  import { DEFAULT_SETTINGS, parseSettings, serializeSettings, customizeCss, generatorMarkup, generatorReact, generatorDocument } from '../../utils/generator';
+  const form = document.querySelector<HTMLFormElement>('#generator-form')!;
+  const select = document.querySelector<HTMLSelectElement>('#generator-effect')!;
+  const validIds = [...select.options].map((option) => Number(option.value));
+  const status = document.querySelector('#generator-status')!;
+  const style = document.querySelector<HTMLStyleElement>('#generator-effect-css')!;
+  const preview = document.querySelector<HTMLElement>('#generator-preview')!;
+  const button = document.querySelector<HTMLButtonElement>('#generated-button')!;
+  const toggle = document.querySelector<HTMLInputElement>('#generator-preview-toggle')!;
+  const codeButtons = [...document.querySelectorAll<HTMLButtonElement>('#generator [data-copy-target]')];
+  const download = document.querySelector<HTMLButtonElement>('#generator-download')!;
+  const share = document.querySelector<HTMLButtonElement>('#generator-share')!;
+  const cache = new Map<number, string>([[14, style.textContent!]]);
+  let settings = { ...DEFAULT_SETTINGS };
+  let exportedCss = '';
+  let token = 0;
+  const fillForm = () => {
+    for (const [key, value] of Object.entries(settings)) {
+      const input = form.elements.namedItem(key);
+      if (input instanceof HTMLInputElement || input instanceof HTMLSelectElement) input.value = String(value);
+    }
+  };
+  async function render() {
+    const request = ++token;
+    codeButtons.forEach((control) => { control.disabled = true; });
+    download.disabled = true;
+    preview.setAttribute('aria-busy', 'true');
+    for (const key of ['radius', 'padding', 'duration'] as const) document.querySelector(`#${key}-value`)!.textContent = `${settings[key]}${key === 'duration' ? 'ms' : 'px'}`;
+    try {
+      let source = cache.get(settings.effect);
+      if (!source) {
+        status.textContent = 'Loading the effect…';
+        const data = await loadButtonData();
+        if (request !== token) return;
+        const snippet = data.snippets[settings.effect];
+        const commentEnd = snippet?.indexOf('*/');
+        if (!snippet || commentEnd === -1) throw new Error('Missing code');
+        source = snippet.slice(commentEnd + 2).trim();
+        cache.set(settings.effect, source);
+      }
+      exportedCss = customizeCss(source, settings);
+      style.textContent = exportedCss;
+      button.className = `btn fx-${settings.effect}`;
+      button.querySelector('.btn-label')!.textContent = settings.label;
+      button.setAttribute('aria-label', settings.label);
+      button.toggleAttribute('data-preview', toggle.checked);
+      preview.style.backgroundColor = settings.surface;
+      document.querySelector('#generator-html-code')!.textContent = generatorMarkup(settings);
+      document.querySelector('#generator-css-code')!.textContent = exportedCss;
+      document.querySelector('#generator-react-code')!.textContent = generatorReact(settings);
+      codeButtons.forEach((control) => { control.disabled = false; control.dataset.copyEffect = String(settings.effect); });
+      download.disabled = false;
+      status.textContent = 'Ready to copy. Check your final color contrast.';
+    } catch {
+      if (request === token) status.textContent = 'The effect could not load. Choose it again or reset the settings to retry.';
+    } finally { if (request === token) preview.removeAttribute('aria-busy'); }
+  }
+  const readForm = () => {
+    const entries = [...new FormData(form).entries()].map(([key, value]) => [key, String(value)]);
+    settings = parseSettings(new URLSearchParams(entries).toString(), validIds);
+    void render();
+  };
+  form.addEventListener('submit', (event) => event.preventDefault());
+  form.addEventListener('input', readForm);
+  form.addEventListener('change', readForm);
+  form.addEventListener('reset', () => {
+    settings = { ...DEFAULT_SETTINGS };
+    toggle.checked = false;
+    window.setTimeout(() => { fillForm(); void render(); }, 0);
+  });
+  share.addEventListener('click', async () => {
+    const url = new URL(window.location.href);
+    url.hash = serializeSettings(settings);
+    status.textContent = await copyText(url.href) ? 'Share link copied. It includes your current settings.' : 'Copy failed. Try again.';
+  });
+  download.addEventListener('click', () => {
+    if (!exportedCss) return;
+    const url = URL.createObjectURL(new Blob([generatorDocument(settings, exportedCss)], { type: 'text/html' }));
+    const link = document.createElement('a'); link.href = url; link.download = 'colorion-button.html'; link.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    status.textContent = 'HTML file downloaded.';
+    window.plausible?.('Button Downloaded', { props: { effect_id: String(settings.effect), page_type: 'tool' } });
+  });
+  const restore = () => { settings = parseSettings(window.location.hash, validIds); fillForm(); void render(); };
+  window.addEventListener('hashchange', restore);
+  restore();
+</script>

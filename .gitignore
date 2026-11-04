@@ -17,3 +17,7 @@ npm-debug.log*
 
 # macOS
 .DS_Store
+
+# browser verification artifacts
+playwright-report/
+test-results/

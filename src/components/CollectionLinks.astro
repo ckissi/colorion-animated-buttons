@@ -1,0 +1,7 @@
+---
+import { collections } from '../data/catalog';
+---
+<div class="collection-links">{collections.map((collection) => <a href={`/collections/${collection.slug}/`}>
+  <span class="collection-link-name">{collection.name}<span aria-hidden="true">↗</span></span>
+  <span>{collection.summary}</span><span class="mono">{collection.ids.length} examples</span>
+</a>)}</div>

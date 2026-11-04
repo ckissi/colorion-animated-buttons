@@ -1,0 +1,24 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ButtonCard from '../../components/ButtonCard.astro';
+import GalleryModal from '../../components/GalleryModal.astro';
+import { collections, effectPages, type Collection } from '../../data/catalog';
+import { getEffect, getCss } from '../../data/buttons';
+import { getGuide } from '../../data/guides';
+export function getStaticPaths() { return collections.map((collection) => ({ params: { slug: collection.slug }, props: { collection } })); }
+interface Props { collection: Collection; }
+const { collection } = Astro.props;
+const guide = getGuide(collection.guide);
+const implementations = effectPages.filter((page) => page.ids.some((id) => collection.ids.includes(id)));
+---
+<Layout title={`${collection.title}: examples and code | Colorion`} description={collection.summary} breadcrumbs={[{ name: 'Buttons', href: '/' }, { name: 'Collections', href: '/collections/' }, { name: collection.name, href: `/collections/${collection.slug}/` }]}>
+  <main class="page-width content-main" id="main" tabindex="-1" data-page-type="collection">
+    <div class="page-intro"><span class="eyebrow">{collection.ids.length} live examples</span><h1>{collection.title}</h1><p>{collection.intro}</p></div>
+    <section class="section" aria-labelledby="examples-title"><div class="section-heading"><h2 id="examples-title">Compare the effects.</h2><a href="/tools/button-generator/">Customize your own ↗</a></div><div class="panel"><div class="grid">{collection.ids.map((id) => <ButtonCard effect={getEffect(id)} />)}</div></div></section>
+    <section class="section" aria-labelledby="selection-title"><div class="section-heading"><h2 id="selection-title">Choose the right treatment.</h2></div><div class="advice-grid">{collection.advice.map((item) => <div><h3>{item.title}</h3><p>{item.text}</p></div>)}</div></section>
+    {implementations.length > 0 && <section class="section" aria-labelledby="implementations-title"><div class="section-heading"><h2 id="implementations-title">Understand the implementation.</h2></div><div class="resource-list">{implementations.map((page) => <a href={`/effects/${page.slug}/`}><strong>{page.name}</strong><p>{page.summary}</p><span aria-hidden="true">↗</span></a>)}</div></section>}
+    <aside class="reading-note"><p>Continue with <a href={`/guides/${guide.slug}/`}>{guide.name.toLowerCase()}</a>. For other techniques, <a href="/collections/">browse all collections</a>.</p></aside>
+    <GalleryModal />
+    <style is:global set:html={getCss(collection.ids)}></style>
+  </main>
+</Layout>

@@ -1,0 +1,112 @@
+{
+  "audit_date": "2026-11-04",
+  "site": "https://animatedbuttons.colorion.co/",
+  "lighthouse": {
+    "version": "13.0.1",
+    "fetchTime": "2026-11-04T07:22:17.140Z",
+    "formFactor": "mobile",
+    "throttlingMethod": "simulate",
+    "scores": {
+      "performance": 99,
+      "accessibility": 94,
+      "seo": 92
+    },
+    "metrics": {
+      "first-contentful-paint": {
+        "displayValue": "1.4\u00a0s",
+        "numericValue": 1401.216
+      },
+      "largest-contentful-paint": {
+        "displayValue": "1.7\u00a0s",
+        "numericValue": 1701.216
+      },
+      "total-blocking-time": {
+        "displayValue": "0\u00a0ms",
+        "numericValue": 0
+      },
+      "cumulative-layout-shift": {
+        "displayValue": "0",
+        "numericValue": 0
+      },
+      "speed-index": {
+        "displayValue": "1.4\u00a0s",
+        "numericValue": 1401.216
+      },
+      "total-byte-weight": {
+        "displayValue": "Total size was 139\u00a0KiB",
+        "numericValue": 142398
+      }
+    },
+    "findings": [
+      {
+        "id": "color-contrast",
+        "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+        "displayValue": null,
+        "affected_items": 99
+      },
+      {
+        "id": "heading-order",
+        "title": "Heading elements are not in a sequentially-descending order",
+        "displayValue": null,
+        "affected_items": 1
+      },
+      {
+        "id": "label-content-name-mismatch",
+        "title": "Elements with visible text labels do not have matching accessible names.",
+        "displayValue": null,
+        "affected_items": 99
+      },
+      {
+        "id": "robots-txt",
+        "title": "robots.txt is not valid",
+        "displayValue": "474 errors found",
+        "affected_items": 474
+      }
+    ]
+  },
+  "build": {
+    "command": "npm run build",
+    "result": "passed",
+    "html_page_count": 1,
+    "button_count": 99
+  },
+  "http_checks": [
+    {
+      "path": "/robots.txt",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "body": "homepage HTML",
+      "canonical": "https://animatedbuttons.colorion.co/"
+    },
+    {
+      "path": "/sitemap.xml",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "body": "homepage HTML",
+      "canonical": "https://animatedbuttons.colorion.co/"
+    },
+    {
+      "path": "/sitemap-index.xml",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "body": "homepage HTML",
+      "canonical": "https://animatedbuttons.colorion.co/"
+    },
+    {
+      "path": "/seo-audit-missing-page-20261104/",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "body": "homepage HTML",
+      "canonical": "https://animatedbuttons.colorion.co/"
+    }
+  ],
+  "limitations": [
+    "One simulated mobile Lighthouse run, not field Core Web Vitals data.",
+    "No Search Console, analytics account, backlink index, or paid keyword-volume data accessed.",
+    "Some default Python requests returned 403. Custom-user-agent requests and Lighthouse succeeded. No conclusion about verified Googlebot access."
+  ],
+  "report_writing_check": {
+    "tool": "ste-lint.py",
+    "first_pass_per_100_words": 1.66
+  }
+}

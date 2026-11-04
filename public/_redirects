@@ -1,0 +1,3 @@
+# Existing files and generated directory routes take precedence over this rule.
+# Sevalla serves this page with an actual 404 status for every missing path.
+/* /404.html 404

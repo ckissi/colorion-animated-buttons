@@ -1,0 +1,11 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CollectionLinks from '../../components/CollectionLinks.astro';
+---
+<Layout title="CSS button collections: glow, fill, border and motion | Colorion" description="Browse CSS button effects by technique. Compare glow, sliding fills, borders, shadows, arrows, and motion with live demos and copyable code." breadcrumbs={[{ name: 'Buttons', href: '/' }, { name: 'Collections', href: '/collections/' }]}>
+  <main class="page-width content-main" id="main" tabindex="-1">
+    <div class="page-intro"><span class="eyebrow">Collections</span><h1>CSS button collections.</h1><p>Choose a family of effects. Compare the movement, learn the tradeoffs, and copy the implementation that fits your interface.</p></div>
+    <section class="section" aria-label="Button collections"><CollectionLinks /></section>
+    <aside class="reading-note"><p>New to CSS animation? Start with <a href="/guides/css-button-hover-effects/">how button hover effects work</a>, or <a href="/tools/button-generator/">customize a button in the generator</a>.</p></aside>
+  </main>
+</Layout>

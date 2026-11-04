@@ -1,0 +1,73 @@
+---
+import palette from '@tabler/icons/outline/palette.svg?raw';
+import filter from '@tabler/icons/outline/color-filter.svg?raw';
+import swatch from '@tabler/icons/outline/color-swatch.svg?raw';
+import wand from '@tabler/icons/outline/wand.svg?raw';
+import grid from '@tabler/icons/outline/layout-grid.svg?raw';
+import mobile from '@tabler/icons/outline/device-mobile.svg?raw';
+import gradient from '@tabler/icons/outline/brightness-2.svg?raw';
+import button from '@tabler/icons/outline/rectangle.svg?raw';
+import loader from '@tabler/icons/outline/loader-2.svg?raw';
+import tooltip from '@tabler/icons/outline/tooltip.svg?raw';
+import motion from '@tabler/icons/outline/activity.svg?raw';
+import collapse from '@tabler/icons/outline/layout-sidebar-left-collapse.svg?raw';
+import expand from '@tabler/icons/outline/layout-sidebar-left-expand.svg?raw';
+import external from '@tabler/icons/outline/external-link.svg?raw';
+import { colorionProjects, colorionHref } from '../data/colorion';
+const icons = { palette, filter, swatch, wand, grid, mobile, gradient, button, loader, tooltip, motion };
+---
+<aside class="project-sidebar" aria-label="Colorion projects">
+  <div class="project-sidebar-head">
+    <span class="project-sidebar-brand">Colorion<span>Tools for your next idea</span></span>
+    <button id="project-sidebar-toggle" class="project-sidebar-toggle" type="button" aria-controls="colorion-projects-nav" aria-expanded="true" aria-label="Collapse Colorion sidebar" title="Collapse Colorion sidebar" hidden>
+      <span class="sidebar-collapse-icon" aria-hidden="true" set:html={collapse}></span>
+      <span class="sidebar-expand-icon" aria-hidden="true" set:html={expand}></span>
+    </button>
+  </div>
+  <nav class="project-sidebar-nav" id="colorion-projects-nav" aria-label="Other Colorion projects">
+    <span class="project-sidebar-caption mono">Explore the collection</span>
+    <ul>{colorionProjects.map((project) => <li>
+      <a href={colorionHref(project.href)} target="_blank" rel="noopener" aria-label={`${project.name} (opens in a new tab)`} title={`${project.name} (opens in a new tab)`}>
+        <span class="project-sidebar-icon" aria-hidden="true" set:html={icons[project.icon]}></span>
+        <span class="project-sidebar-label">{project.name}</span>
+        <span class="project-sidebar-external" aria-hidden="true" set:html={external}></span>
+      </a>
+    </li>)}</ul>
+  </nav>
+  <p class="project-sidebar-foot">Made for designers.<br />Built for the web.</p>
+</aside>
+<button class="project-sidebar-backdrop" id="project-sidebar-backdrop" type="button" tabindex="-1" aria-hidden="true" aria-label="Close Colorion sidebar"></button>
+<script>
+  const root = document.documentElement;
+  const toggle = document.querySelector<HTMLButtonElement>('#project-sidebar-toggle')!;
+  const sidebar = document.querySelector<HTMLElement>('.project-sidebar')!;
+  const mobile = window.matchMedia('(max-width: 800px)');
+  const storageKey = 'colorion-projects-collapsed';
+  const update = (collapsed: boolean, save = false) => {
+    root.dataset.projectsCollapsed = String(collapsed);
+    toggle.setAttribute('aria-expanded', String(!collapsed));
+    toggle.setAttribute('aria-label', `${collapsed ? 'Expand' : 'Collapse'} Colorion sidebar`);
+    toggle.title = `${collapsed ? 'Expand' : 'Collapse'} Colorion sidebar`;
+    if (save) { try { localStorage.setItem(storageKey, String(collapsed)); } catch { /* Storage is optional. */ } }
+  };
+  update(root.dataset.projectsCollapsed === 'true');
+  toggle.hidden = false;
+  toggle.addEventListener('click', () => update(root.dataset.projectsCollapsed !== 'true', true));
+  document.querySelector('#project-sidebar-backdrop')!.addEventListener('click', () => update(true, true));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && mobile.matches && root.dataset.projectsCollapsed === 'false') {
+      update(true, true);
+      toggle.focus();
+    }
+  });
+  sidebar.addEventListener('click', (event) => {
+    if (mobile.matches && event.target instanceof Element && event.target.closest('a')) update(true, true);
+  });
+  mobile.addEventListener('change', () => {
+    // Entering a narrow viewport should never cover the page with an open drawer.
+    if (mobile.matches) update(true);
+  });
+  window.addEventListener('storage', (event) => {
+    if (event.key === storageKey && event.newValue !== null) update(event.newValue === 'true');
+  });
+</script>

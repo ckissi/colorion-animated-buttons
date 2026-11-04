@@ -4,6 +4,6 @@ import { defineConfig } from 'astro/config';
 export default defineConfig({
   site: 'https://animatedbuttons.colorion.co',
   server: { port: Number(process.env.PORT) || 4321 },
-  // Inline the page's CSS into <head> so it isn't a separate render-blocking request.
-  build: { inlineStylesheets: 'always' },
+  trailingSlash: 'always',
+  build: { inlineStylesheets: 'auto' },
 });

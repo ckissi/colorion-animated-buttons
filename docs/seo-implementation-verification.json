@@ -1,0 +1,55 @@
+{
+  "date": "2026-11-04",
+  "scope": "local production preview, not live deployment",
+  "routes": {
+    "indexable": 26,
+    "html_including_404": 27,
+    "collections": 6,
+    "effect_pages": 12,
+    "guides": 3
+  },
+  "checks": {
+    "build": "passed",
+    "static_seo": "passed",
+    "internal_links_checked": 937,
+    "complete_exports_checked": 99,
+    "browser_tests_passed": 30,
+    "browser_projects": [
+      "desktop Chrome",
+      "mobile viewport in Chrome"
+    ],
+    "source_copy_lint_per_100_words": 0.18,
+    "astro_typescript": {
+      "errors": 0,
+      "warnings": 0,
+      "hints": 1,
+      "hint": "Deprecated execCommand is retained only as a clipboard fallback."
+    },
+    "handoff_writing_lint_per_100_words": 1.62
+  },
+  "lighthouse": {
+    "version": "13.0.1",
+    "fetch_time": "2026-11-04T09:52:57.305Z",
+    "form_factor": "mobile",
+    "scores": {
+      "performance": 100,
+      "accessibility": 100,
+      "seo": 100
+    },
+    "metrics": {
+      "largest-contentful-paint": {
+        "display": "1.5\u00a0s",
+        "value": 1503.58605
+      },
+      "total-blocking-time": {
+        "display": "0\u00a0ms",
+        "value": 0
+      },
+      "cumulative-layout-shift": {
+        "display": "0",
+        "value": 0
+      }
+    },
+    "note": "One simulated mobile run against localhost. Analytics requests blocked. Not field data or evidence of rankings."
+  }
+}

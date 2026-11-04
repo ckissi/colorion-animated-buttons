@@ -1,0 +1,34 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ButtonCard from '../../components/ButtonCard.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+import GalleryModal from '../../components/GalleryModal.astro';
+import { effectPages, getCollection, type EffectPage } from '../../data/catalog';
+import { getEffect, getMarkup, getCss, getReact, prompts } from '../../data/buttons';
+import { getGuide } from '../../data/guides';
+export function getStaticPaths() { return effectPages.map((page) => ({ params: { slug: page.slug }, props: { page } })); }
+interface Props { page: EffectPage; }
+const { page } = Astro.props;
+const collection = getCollection(page.collection);
+const guide = getGuide(collection.guide);
+const related = page.related.map((slug) => effectPages.find((item) => item.slug === slug)!);
+---
+<Layout title={`${page.title} | Colorion`} description={page.summary} breadcrumbs={[{ name: 'Buttons', href: '/' }, { name: collection.name, href: `/collections/${collection.slug}/` }, { name: page.name, href: `/effects/${page.slug}/` }]}>
+  <main class="page-width content-main" id="main" tabindex="-1" data-page-type="effect">
+    <div class="page-intro"><span class="eyebrow">Pure CSS implementation</span><h1>{page.name}</h1><p>{page.summary}</p></div>
+    <section class="section" aria-labelledby="preview-title"><div class="section-heading"><h2 id="preview-title">Try the effect.</h2><a href="/tools/button-generator/">Customize a button ↗</a></div><div class="panel"><div class="grid preview-grid">{page.ids.map((id) => <ButtonCard effect={getEffect(id)} detailLink={false} />)}</div></div></section>
+    <section class="prose" aria-labelledby="how-title"><h2 id="how-title">How it works</h2>{page.mechanism.map((text) => <p>{text}</p>)}<h2>Make it yours</h2><ul>{page.customize.map((text) => <li>{text}</li>)}</ul></section>
+    <aside class="reading-note"><p>{page.limitation}</p><p>Keep the supplied focus outline and reduced-motion guard. Test your final colors, label, and touch behavior. <a href="/guides/accessible-button-animations/">Read the accessibility guide</a>.</p></aside>
+    <section class="section" aria-labelledby="code-title"><div class="section-heading"><h2 id="code-title">Copy the complete code.</h2></div><p class="section-intro">Each variant includes its base styles, effect, focus indicator, and reduced-motion rule. The CSS effect needs no JavaScript.</p>
+      {page.ids.map((id) => <section class="implementation" aria-labelledby={`variant-${id}`}>
+        <h3 id={`variant-${id}`}>{getEffect(id).name}</h3>
+        <div class="code-columns"><CodeBlock id={`html-${id}`} title="HTML" code={getMarkup(id)} format="html" effectId={id} /><CodeBlock id={`css-${id}`} title="CSS" code={getCss([id])} effectId={id} /></div>
+        <details class="export-extra"><summary>Use this button in React</summary><p>Save the CSS above as <code>button.css</code> beside the component. The component imports that file and accepts native button props.</p><CodeBlock id={`react-${id}`} title="React" code={getReact(id)} format="react" effectId={id} /></details>
+        <details class="export-extra"><summary>Copy a prompt for your coding agent</summary><CodeBlock id={`prompt-${id}`} title="prompt" code={prompts[id]} format="prompt" effectId={id} /></details>
+      </section>)}
+    </section>
+    <section class="section" aria-labelledby="related-title"><div class="section-heading"><h2 id="related-title">Try another approach.</h2></div><div class="resource-list">{related.map((item) => <a href={`/effects/${item.slug}/`}><strong>{item.name}</strong><p>{item.summary}</p><span aria-hidden="true">↗</span></a>)}</div></section>
+    <aside class="reading-note"><p>Compare the <a href={`/collections/${collection.slug}/`}>{collection.name.toLowerCase()} collection</a>, or continue with <a href={`/guides/${guide.slug}/`}>{guide.name.toLowerCase()}</a>. All examples use the <a href="/license.txt">MIT license</a>.</p></aside>
+    <GalleryModal /><style is:global set:html={getCss(page.ids)}></style>
+  </main>
+</Layout>

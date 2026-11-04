@@ -1,298 +1,58 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { colorionHref } from '../data/colorion';
+import ButtonCard from '../components/ButtonCard.astro';
+import GalleryModal from '../components/GalleryModal.astro';
+import CollectionLinks from '../components/CollectionLinks.astro';
 import { effects, liveCss } from '../data/buttons';
-
-// Cross-promo: the other tools in the Colorion network, surfaced in the header
-// dropdown. `?ref=` attributes the referral back to this site.
-const REF = 'animatedbuttons.colorion.co';
-const colorionLinks = [
-  { label: 'Colorion', href: 'https://www.colorion.co' },
-  { label: '2 Color Combinations', href: 'https://2colors.colorion.co' },
-  { label: 'Color Palettes', href: 'https://colorpalettes.colorion.co' },
-  { label: 'Palette Generator', href: 'https://palettegenerator.colorion.co' },
-  { label: 'Material Colors', href: 'https://material.colorion.co' },
-  { label: 'Mobile Palette', href: 'https://mobilepalette.colorion.co' },
-  { label: 'Gradients', href: 'https://gradients.colorion.co' },
-  { label: 'Gradient Buttons', href: 'https://gradientbuttons.colorion.co' },
-  { label: 'CSS Loaders', href: 'https://cssloaders.colorion.co' },
-  { label: 'CSS Tooltips', href: 'https://csstooltips.colorion.co' },
-];
+import { guides } from '../data/guides';
 ---
-
-<Layout
-  title="CSS Button Library — 99 pure-CSS hover effects, free to copy"
-  description="A library of 99 buttons with pure-CSS hover effects — no JavaScript, no dependencies. Click any button to view and copy its CSS."
->
-  <header class="site-header">
-    <div class="brand">
-      <div class="brand-mark">B</div>
-      <span class="mono">CSS Button Library</span>
-    </div>
-    <div class="header-right">
-      <details class="menu" id="colorion-menu">
-        <summary class="menu-trigger mono">
-          Colorion Tools
-          <span class="menu-caret" aria-hidden="true">▾</span>
-        </summary>
-        <ul class="menu-list">
-          {
-            colorionLinks.map((link) => (
-              <li>
-                <a
-                  class="mono"
-                  href={`${link.href}?ref=${REF}`}
-                  target="_blank"
-                  rel="noopener"
-                  referrerpolicy="no-referrer-when-downgrade"
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </details>
-      <div class="header-status mono">
-        <span class="pulse-dot"></span>
-        {effects.length} buttons · MIT
+<Layout>
+  <main id="main" tabindex="-1" data-page-type="gallery">
+    <section class="hero home-hero">
+      <div>
+        <span class="hero-tag mono">Pure CSS · Copy &amp; paste</span>
+        <h1>{effects.length} <em>CSS animated buttons</em>, free to copy.</h1>
+        <p>Try a hover effect, copy the HTML and CSS, and make it yours. Explore fills, glows, borders, and shadows. Every export includes keyboard focus and reduced-motion styles.</p>
+        <div class="inline-actions"><a class="action-button" href="#all-buttons">Browse all buttons</a><a href="/tools/button-generator/">Customize a button ↗</a></div>
       </div>
-    </div>
-  </header>
-
-  <section class="hero">
-    <span class="hero-tag mono">Pure CSS · Copy &amp; paste</span>
-    <h1>{effects.length} <em>CSS animated buttons</em>,<br />free to copy.</h1>
-    <p>
-      A library of {effects.length} buttons built with pure CSS hover effects —
-      no JavaScript, no dependencies. Copy the self-contained <code>CSS</code> for
-      any button, or grab a ready-made <code>Prompt</code> to have your coding
-      agent recreate it. Every snippet paints with a single <code>--bink</code>
-      colour token and respects <code>prefers-reduced-motion</code>.
-    </p>
-  </section>
-
-  <main class="library">
-    <div class="panel">
-      <div class="library-head">
-        <span class="mono">Click a button to copy its CSS</span>
-        <span class="mono">{effects.length} buttons</span>
-      </div>
-
-      <div class="grid" id="button-grid">
-        {
-          effects.map((effect, i) => (
-            <article
-              class="cell"
-              role="button"
-              tabindex="0"
-              data-key={String(i + 1)}
-              data-name={effect.name}
-              data-index={String(i + 1).padStart(2, '0')}
-              aria-label={`View CSS for ${effect.name} button`}
-            >
-              <span class="cell-index mono">{String(i + 1).padStart(2, '0')}</span>
-              <div class="cell-actions">
-                <button class="cell-action mono" type="button" data-action="prompt" tabindex="-1" aria-label={`Copy LLM prompt for ${effect.name} button`}>◳ Prompt</button>
-                <button class="cell-action mono" type="button" data-action="css" tabindex="-1" aria-label={`View CSS for ${effect.name} button`}>⧉ CSS</button>
-              </div>
-              <div class="stage">
-                <button class={`btn fx-${i + 1}`} type="button" tabindex="-1">
-                  <span class="btn-label">{effect.name}</span>
-                </button>
-              </div>
-              <h3>{effect.name}</h3>
-            </article>
-          ))
-        }
-      </div>
-    </div>
-    <aside class="kinetics-related" aria-label="Related spring animation resources"><p>Need spring motion for a button? Use the <a href="https://kinetics.colorion.co/effects/magnetic-button/">magnetic button example</a> for HTML, CSS, JavaScript, and React, or <a href="https://kinetics.colorion.co/tools/spring-animation-generator/">generate your own CSS spring curve</a>.</p></aside>
-  </main>
-
-  <footer class="site-footer">
-    <span class="mono">CSS Button Library</span>
-    <nav class="footer-links mono">
-      <a href="https://colorion.co?ref=animatedbuttons.colorion.co" target="_blank" rel="noopener" referrerpolicy="no-referrer-when-downgrade">Colorion</a>
-      <a href="https://2colors.colorion.co?ref=animatedbuttons.colorion.co" target="_blank" rel="noopener" referrerpolicy="no-referrer-when-downgrade">2 Colors</a>
-      <a href="https://gradientbuttons.colorion.co?ref=animatedbuttons.colorion.co" target="_blank" rel="noopener" referrerpolicy="no-referrer-when-downgrade">Gradient Buttons</a>
-      <a href="https://github.com/ckissi/colorion-animated-buttons" target="_blank" rel="noopener">GitHub</a>
-    </nav>
-    <span class="mono">Pure CSS · No dependencies · MIT licensed</span>
-    <a class="footer-badge" href="https://sevalla.com?ref=animatedbuttons.colorion.co" target="_blank" rel="noopener">
-      <img src="/hosted-on-sevalla.png" alt="Hosted on Sevalla" width="230" height="73" loading="lazy" />
-    </a>
-  </footer>
-
-  <!-- Copy-to-clipboard modal -->
-  <div class="modal-overlay" id="css-modal" hidden>
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <div class="modal-head">
-        <div class="modal-title-group">
-          <span class="modal-index mono" id="modal-index"></span>
-          <h2 class="modal-title mono" id="modal-title"></h2>
+      <div class="hero-sample"><button class="btn fx-14" type="button"><span class="btn-label">Try the glow</span></button><p>Hover or use your keyboard to try it.</p><a href="/effects/glow/">See how this button works ↗</a></div>
+    </section>
+    <div class="page-width">
+      <section class="section" aria-labelledby="collections-heading">
+        <div class="section-heading"><h2 id="collections-heading">Find your kind of button.</h2><a href="/collections/">All collections ↗</a></div>
+        <CollectionLinks />
+      </section>
+      <section class="section" id="all-buttons" aria-labelledby="gallery-heading">
+        <div class="section-heading"><h2 id="gallery-heading">The complete library.</h2><span class="gallery-count">{effects.length} CSS effects</span></div>
+        <div class="gallery-toolbar" id="gallery-tools" hidden>
+          <div class="gallery-search"><label for="button-search">Find a button by name</label><input id="button-search" type="search" placeholder="Try glow, fill, arrow…" autocomplete="off" /></div>
+          <p class="gallery-count" id="search-count" role="status" aria-live="polite">{effects.length} buttons</p>
         </div>
-        <button class="modal-close mono" id="modal-close" aria-label="Close">✕</button>
-      </div>
-      <div class="modal-preview">
-        <div class="stage" id="modal-preview"></div>
-      </div>
-      <div class="modal-code-wrap">
-        <pre class="modal-code"><code id="modal-code"></code></pre>
-      </div>
-      <div class="modal-foot">
-        <span class="mono modal-hint" id="modal-hint">Pure CSS · self-contained</span>
-        <button class="modal-copy mono" id="modal-copy">Copy CSS</button>
-      </div>
+        <div class="panel"><div class="library-head"><span class="mono">Hover to preview. Open Code to copy.</span></div><div class="grid" id="button-grid">{effects.map((effect) => <ButtonCard effect={effect} />)}</div></div>
+        <p class="empty-state" id="search-empty" hidden>No buttons match that name. Try another word or clear the search.</p>
+      </section>
+      <section class="section" aria-labelledby="guides-heading">
+        <div class="section-heading"><h2 id="guides-heading">Make the code your own.</h2><a href="/guides/">All guides ↗</a></div>
+        <div class="resource-list">{guides.map((guide) => <a href={`/guides/${guide.slug}/`}><strong>{guide.name}</strong><p>{guide.summary}</p><span aria-hidden="true">↗</span></a>)}</div>
+      </section>
+      <aside class="reading-note" aria-label="Related Colorion tools"><p>Need a gradient surface? Explore <a href={colorionHref('https://gradientbuttons.colorion.co/')}>Gradient Buttons</a>. For pointer-tracking motion, see the <a href={colorionHref('https://kinetics.colorion.co/effects/magnetic-button/')}>Kinetics magnetic button</a> or <a href={colorionHref('https://kinetics.colorion.co/tools/spring-animation-generator/')}>spring animation generator</a>.</p></aside>
     </div>
-  </div>
-
-  <style is:global set:html={liveCss}></style>
+    <GalleryModal />
+    <style is:global set:html={liveCss}></style>
+  </main>
 </Layout>
-
 <script>
-  // ---------- Copy-to-clipboard modal ----------
-  type Mode = 'css' | 'prompt';
-  type ButtonData = { snippets: Record<string, string>; prompts: Record<string, string> };
-
-  // The CSS snippets + LLM prompts (~360 KB) live in a static JSON file rather
-  // than inline, so they don't bloat the document. Fetched once, on first use.
-  let dataPromise: Promise<ButtonData> | undefined;
-  const loadData = () =>
-    (dataPromise ??= fetch('/button-data.json').then((r) => r.json() as Promise<ButtonData>));
-
-  const MODE_CONFIG: Record<Mode, { key: keyof ButtonData; copyLabel: string; hint: string }> = {
-    css: { key: 'snippets', copyLabel: 'Copy CSS', hint: 'Pure CSS · self-contained' },
-    prompt: { key: 'prompts', copyLabel: 'Copy prompt', hint: 'LLM prompt · paste into your coding agent' },
-  };
-
-  // Warm the cache as soon as the user signals intent (pointer over the grid).
-  const grid = document.getElementById('button-grid');
-  grid?.addEventListener('pointerenter', loadData, { once: true });
-
-  const cells = Array.from(document.querySelectorAll<HTMLElement>('.cell'));
-  const overlay = document.getElementById('css-modal')!;
-  const modalIndex = document.getElementById('modal-index')!;
-  const modalTitle = document.getElementById('modal-title')!;
-  const modalHint = document.getElementById('modal-hint')!;
-  const modalPreview = document.getElementById('modal-preview')!;
-  const modalCode = document.getElementById('modal-code')!;
-  const copyBtn = document.getElementById('modal-copy') as HTMLButtonElement;
-  const closeBtn = document.getElementById('modal-close')!;
-
-  let lastFocused: HTMLElement | null = null;
-  let copyReset: number | undefined;
-  let currentMode: Mode = 'css';
-  let currentText = ''; // the copyable snippet for the open modal ('' while loading)
-  let openToken = 0; // guards against races when switching buttons mid-fetch
-
-  async function openModal(cell: HTMLElement, mode: Mode = 'css') {
-    const key = cell.dataset.key!;
-    const config = MODE_CONFIG[mode];
-    const token = ++openToken;
-
-    // Show the modal shell immediately; the code text fills in once data loads.
-    currentMode = mode;
-    currentText = '';
-    modalIndex.textContent = cell.dataset.index || '';
-    modalTitle.textContent = cell.dataset.name || '';
-    modalHint.textContent = config.hint;
-    modalCode.textContent = 'Loading…';
-
-    // clone the live button for the preview
-    const btnEl = cell.querySelector('.stage > *');
-    modalPreview.replaceChildren(btnEl ? btnEl.cloneNode(true) : document.createTextNode(''));
-
-    copyBtn.textContent = config.copyLabel;
-    copyBtn.classList.remove('copied');
-
-    lastFocused = cell;
-    overlay.removeAttribute('hidden');
-    document.body.style.overflow = 'hidden';
-    copyBtn.focus();
-
-    let text = '';
-    try {
-      text = (await loadData())[config.key][key] || '';
-    } catch {
-      text = '';
-    }
-    if (token !== openToken) return; // a newer open superseded this one
-    currentText = text;
-    modalCode.textContent = text || 'Failed to load — please try again.';
-  }
-
-  function closeModal() {
-    overlay.setAttribute('hidden', '');
-    document.body.style.overflow = '';
-    modalPreview.replaceChildren();
-    lastFocused?.focus();
-  }
-
-  async function copyCss() {
-    const text = currentText;
-    if (!text) return; // data not loaded yet (or failed) — nothing to copy
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch {
-      // fallback for non-secure contexts
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      ta.remove();
-    }
-    copyBtn.textContent = 'Copied ✓';
-    copyBtn.classList.add('copied');
-    window.clearTimeout(copyReset);
-    copyReset = window.setTimeout(() => {
-      copyBtn.textContent = MODE_CONFIG[currentMode].copyLabel;
-      copyBtn.classList.remove('copied');
-    }, 1800);
-  }
-
-  cells.forEach((cell) => {
-    cell.addEventListener('click', (e) => {
-      const action = (e.target as HTMLElement).closest<HTMLElement>('[data-action]');
-      openModal(cell, action?.dataset.action === 'prompt' ? 'prompt' : 'css');
-    });
-    cell.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        openModal(cell);
-      }
-    });
+  const input = document.querySelector<HTMLInputElement>('#button-search')!;
+  const cards = [...document.querySelectorAll<HTMLElement>('#button-grid > [data-effect-name]')];
+  const count = document.querySelector('#search-count')!;
+  const empty = document.querySelector<HTMLElement>('#search-empty')!;
+  document.querySelector('#gallery-tools')!.removeAttribute('hidden');
+  input.addEventListener('input', () => {
+    const query = input.value.trim().toLowerCase();
+    let found = 0;
+    for (const card of cards) { card.hidden = !card.dataset.effectName!.toLowerCase().includes(query); if (!card.hidden) found++; }
+    count.textContent = `${found} ${found === 1 ? 'button' : 'buttons'}`;
+    empty.hidden = found > 0;
   });
-
-  copyBtn.addEventListener('click', copyCss);
-  closeBtn.addEventListener('click', closeModal);
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) closeModal();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !overlay.hasAttribute('hidden')) closeModal();
-  });
-
-  // ---------- Header dropdown (Colorion tools) ----------
-  // <details> handles open/close natively; this just closes it when the user
-  // clicks away, presses Escape, or picks a destination.
-  const menu = document.getElementById('colorion-menu') as HTMLDetailsElement | null;
-  if (menu) {
-    document.addEventListener('click', (e) => {
-      if (menu.open && !menu.contains(e.target as Node)) menu.open = false;
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && menu.open) menu.open = false;
-    });
-    menu.querySelectorAll('a').forEach((a) =>
-      a.addEventListener('click', () => { menu.open = false; })
-    );
-  }
 </script>
-
-<style>
-.kinetics-related { max-width: 900px; margin: 40px auto; padding: 24px; line-height: 1.8; }
-.kinetics-related a { text-decoration: underline; text-underline-offset: 4px; }
-</style>
